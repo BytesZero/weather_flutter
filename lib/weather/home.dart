@@ -1,4 +1,7 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
+import 'dart:io';
 
 /// WeaterHome
 class WeaterHome extends StatefulWidget {
@@ -8,6 +11,15 @@ class WeaterHome extends StatefulWidget {
 
 ///绘制Weather页
 class WeatherHomeState extends State<WeaterHome> {
+  var temp = 0;
+  var weather = "null";
+
+  @override
+  void initState() {
+    super.initState();
+    getWeather();
+  }
+
   @override
   Widget build(BuildContext context) {
     return new MaterialApp(
@@ -44,15 +56,33 @@ class WeatherHomeState extends State<WeaterHome> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           new Text(
-            "12°",
+            "$temp°",
             style: new TextStyle(fontSize: 64.0),
           ),
           new Text(
-            "晴天",
+            weather,
             style: new TextStyle(fontSize: 18.0, color: Colors.black38),
           )
         ],
       ),
     );
+  }
+
+  ///通过网络获取天气
+  void getWeather() async {
+    var httpClient = new HttpClient(); //创建client
+    var uri =
+        Uri.parse('https://test-miniprogram.com/api/weather/now?city=北京市');
+    var request = await httpClient.getUrl(uri);
+    var response = await request.close();
+    if (response.statusCode == HttpStatus.OK) {
+      var responseBody = await response.transform(UTF8.decoder).join();
+      print("responseBody: $responseBody");
+      var date = JSON.decode(responseBody);
+      setState(() {
+        temp = date['result']['now']['temp'];
+        weather = date['result']['now']['weather'];
+      });
+    }
   }
 }
