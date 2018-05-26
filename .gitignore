@@ -1,0 +1,10 @@
+.DS_Store
+*.iml
+.dart_tool/
+
+.packages
+.pub/
+
+build/
+
+.flutter-plugins
