@@ -25,15 +25,15 @@ class WeatherHomeState extends State<WeaterHome> {
     return new MaterialApp(
       title: 'WeaterHome',
       home: new Scaffold(
-        appBar: new AppBar(
-          title: new Text(
-            "Weather Home Page",
-            style: new TextStyle(color: Colors.black87),
-          ),
-          centerTitle: true,
-          backgroundColor: const Color(0xFFCBEEFD),
-          elevation: 0.0,
-        ),
+//        appBar: new AppBar(
+//          title: new Text(
+//            "Weather Home Page",
+//            style: new TextStyle(color: Colors.black87),
+//          ),
+//          centerTitle: true,
+//          backgroundColor: const Color(0xFFCBEEFD),
+//          elevation: 0.0,
+//        ),
         body: homeBody(),
       ),
       debugShowCheckedModeBanner: false,
@@ -43,14 +43,14 @@ class WeatherHomeState extends State<WeaterHome> {
   ///homeBody
   Widget homeBody() {
     return new Container(
-      height: 380.0,
-      alignment: Alignment.center,
+      alignment: Alignment.topCenter,
       decoration: new BoxDecoration(
         image: new DecorationImage(
-          image: new NetworkImage(
-              'https://raw.githubusercontent.com/udacity/cn-wechat-weather/2-4/images/sunny-bg.png'),
+          alignment: Alignment.topCenter,
+          image: new AssetImage('res/backgrounds/sunny-bg.webp'),
         ),
       ),
+      padding: new EdgeInsets.only(top: 140.0),
       child: new Column(
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
