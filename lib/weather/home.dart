@@ -2,6 +2,8 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'dart:io';
+import 'dart:async';
+import 'package:flutter/rendering.dart';
 
 /// WeaterHome
 class WeaterHome extends StatefulWidget {
@@ -29,6 +31,7 @@ class WeatherHomeState extends State<WeaterHome> {
     'heavyrain': '大雨',
     'snow': '雪'
   };
+  Completer<Null> completer;
 
   @override
   void initState() {
@@ -50,7 +53,17 @@ class WeatherHomeState extends State<WeaterHome> {
 //          backgroundColor: const Color(0xFFCBEEFD),
 //          elevation: 0.0,
 //        ),
-        body: homeBody(),
+        body: new RefreshIndicator(
+            child: new CustomScrollView(
+              slivers: <Widget>[
+                new SliverFillViewport(
+                    delegate: new SliverChildBuilderDelegate(
+                        (BuildContext context, int index) {
+                  return homeBody();
+                }, childCount: 1)),
+              ],
+            ),
+            onRefresh: _refreshHandler),
       ),
       debugShowCheckedModeBanner: false,
     );
@@ -115,5 +128,16 @@ class WeatherHomeState extends State<WeaterHome> {
         weather = weatherMap[tempWeather];
       });
     }
+    ///完成下拉刷新
+    if (completer != null && !completer.isCompleted) {
+      completer.complete(null);
+    }
+  }
+
+  ///下拉刷新
+  Future<Null> _refreshHandler() async {
+    completer = new Completer<Null>();
+    getWeather();
+    return completer.future;
   }
 }
