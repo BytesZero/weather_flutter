@@ -4,15 +4,32 @@ import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:async';
 import 'package:flutter/rendering.dart';
+import 'list.dart';
 
-/// WeaterHome
-class WeaterHome extends StatefulWidget {
+///HomePage
+class HomePage extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return new MaterialApp(
+      title: 'HomePage',
+      theme: new ThemeData(primarySwatch: Colors.blue),
+      home: new WeatherHome(),
+      debugShowCheckedModeBanner: false,
+      routes: <String, WidgetBuilder>{
+        '/list': (BuildContext context) => new ListPage(),
+      },
+    );
+  }
+}
+
+/// WeatherHome
+class WeatherHome extends StatefulWidget {
   @override
   State<StatefulWidget> createState() => new WeatherHomeState();
 }
 
 ///绘制Weather页
-class WeatherHomeState extends State<WeaterHome> {
+class WeatherHomeState extends State<WeatherHome> {
   ///温度
   var temp = 0;
 
@@ -49,33 +66,25 @@ class WeatherHomeState extends State<WeaterHome> {
 
   @override
   Widget build(BuildContext context) {
-    return new MaterialApp(
-      title: 'WeaterHome',
-      home: new Scaffold(
-//        appBar: new AppBar(
-//          title: new Text(
-//            "Weather Home Page",
-//            style: new TextStyle(color: Colors.black87),
-//          ),
-//          centerTitle: true,
-//          backgroundColor: const Color(0xFFCBEEFD),
-//          elevation: 0.0,
-//        ),
-        body: new RefreshIndicator(
-            child: new CustomScrollView(
-              slivers: <Widget>[
-                new SliverList(
-                  delegate: new SliverChildListDelegate(<Widget>[
-                    homeBody(),
-                    timeTips(),
-                    buildForeCast(),
-                  ]),
-                )
-              ],
-            ),
-            onRefresh: _refreshHandler),
+    return new Scaffold(
+      appBar: new AppBar(
+        title: new Text("Home Page"),
+        centerTitle: true,
       ),
-      debugShowCheckedModeBanner: false,
+      body: new RefreshIndicator(
+          child: new CustomScrollView(
+            primary: true,
+            slivers: <Widget>[
+              new SliverList(
+                delegate: new SliverChildListDelegate(<Widget>[
+                  homeBody(),
+                  timeTips(),
+                  buildForeCast(),
+                ]),
+              )
+            ],
+          ),
+          onRefresh: _refreshHandler),
     );
   }
 
@@ -133,44 +142,47 @@ class WeatherHomeState extends State<WeaterHome> {
       todayWeatherDetails =
           "${todayWeather['minTemp']}° ~ ${todayWeather['maxTemp']}°";
     }
-    return new Container(
-      height: 49.0,
-      padding: new EdgeInsets.symmetric(vertical: 14.0),
-      margin: new EdgeInsets.symmetric(horizontal: 16.0),
-      decoration: new BoxDecoration(
-        ///Border
-        border: new Border(
-            top: new BorderSide(
-          color: Colors.black38,
-          style: BorderStyle.solid,
-          width: 0.2,
-        )),
-      ),
-      child: new Row(
-        mainAxisSize: MainAxisSize.max,
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: <Widget>[
-          new Text(
-            todayTime,
-            style: new TextStyle(color: Colors.black45),
-          ),
-          new Row(
-            mainAxisSize: MainAxisSize.max,
-            mainAxisAlignment: MainAxisAlignment.end,
-            children: <Widget>[
-              new Text(
-                todayWeatherDetails,
-                style: new TextStyle(color: Colors.black45),
-              ),
-              new Padding(padding: new EdgeInsets.symmetric(horizontal: 2.0)),
-              new Image.asset(
-                'res/icons/arrow-icon.webp',
-                height: 12.0,
-                fit: BoxFit.contain,
-              ),
-            ],
-          )
-        ],
+    return new GestureDetector(
+      onTap: _goWeatherListPage,
+      child: new Container(
+        height: 49.0,
+        padding: new EdgeInsets.symmetric(vertical: 14.0),
+        margin: new EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: new BoxDecoration(
+          ///Border
+          border: new Border(
+              top: new BorderSide(
+            color: Colors.black38,
+            style: BorderStyle.solid,
+            width: 0.2,
+          )),
+        ),
+        child: new Row(
+          mainAxisSize: MainAxisSize.max,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: <Widget>[
+            new Text(
+              todayTime,
+              style: new TextStyle(color: Colors.black45),
+            ),
+            new Row(
+              mainAxisSize: MainAxisSize.max,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                new Text(
+                  todayWeatherDetails,
+                  style: new TextStyle(color: Colors.black45),
+                ),
+                new Padding(padding: new EdgeInsets.symmetric(horizontal: 2.0)),
+                new Image.asset(
+                  'res/icons/arrow-icon.webp',
+                  height: 12.0,
+                  fit: BoxFit.contain,
+                ),
+              ],
+            )
+          ],
+        ),
       ),
     );
   }
@@ -298,5 +310,10 @@ class WeatherHomeState extends State<WeaterHome> {
     completer = new Completer<Null>();
     getWeather();
     return completer.future;
+  }
+
+  ///去天气预报页面
+  void _goWeatherListPage() {
+    Navigator.pushNamed(context, '/list');
   }
 }
