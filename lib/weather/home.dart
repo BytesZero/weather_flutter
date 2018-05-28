@@ -56,11 +56,12 @@ class WeatherHomeState extends State<WeaterHome> {
         body: new RefreshIndicator(
             child: new CustomScrollView(
               slivers: <Widget>[
-                new SliverFillViewport(
-                    delegate: new SliverChildBuilderDelegate(
-                        (BuildContext context, int index) {
-                  return homeBody();
-                }, childCount: 1)),
+                new SliverList(
+                  delegate: new SliverChildListDelegate(<Widget>[
+                    homeBody(),
+                    timeTips(),
+                  ]),
+                )
               ],
             ),
             onRefresh: _refreshHandler),
@@ -73,25 +74,24 @@ class WeatherHomeState extends State<WeaterHome> {
   Widget homeBody() {
     return new Container(
       ///顶部居中对齐
-      alignment: Alignment.topCenter,
+      alignment: Alignment.center,
+      height: 380.0,
 
       ///装饰背景图片
       decoration: new BoxDecoration(
         image: new DecorationImage(
           alignment: Alignment.topCenter,
+          fit: BoxFit.fill,
           image: new AssetImage(weatherImage),
         ),
       ),
-      padding: new EdgeInsets.only(top: 140.0),
 
-      ///child 距离顶部140
       child: new Column(
         ///最小大小，根据children计算
         mainAxisSize: MainAxisSize.min,
-
-        ///主体居中
         mainAxisAlignment: MainAxisAlignment.center,
 
+        ///主体居中
         children: <Widget>[
           ///温度
           new Text(
@@ -104,6 +104,31 @@ class WeatherHomeState extends State<WeaterHome> {
             weather,
             style: new TextStyle(fontSize: 18.0, color: Colors.black38),
           )
+        ],
+      ),
+    );
+  }
+
+  ///未来24小时天气提示
+  Widget timeTips() {
+    return new Container(
+      alignment: Alignment.center,
+      padding: new EdgeInsets.only(top: 6.0, bottom: 6.0),
+      child: new Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: <Widget>[
+          new Image.asset(
+            'res/icons/time-icon.webp',
+            width: 18.0,
+            fit: BoxFit.fitWidth,
+          ),
+          new Text(
+            "未来24小时天气预测",
+            style: new TextStyle(
+              color: Colors.black45,
+              fontSize: 14.0,
+            ),
+          ),
         ],
       ),
     );
@@ -128,6 +153,7 @@ class WeatherHomeState extends State<WeaterHome> {
         weather = weatherMap[tempWeather];
       });
     }
+
     ///完成下拉刷新
     if (completer != null && !completer.isCompleted) {
       completer.complete(null);
