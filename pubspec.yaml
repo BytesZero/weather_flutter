@@ -35,6 +35,7 @@ flutter:
     - res/backgrounds/snow-bg.webp
     - res/backgrounds/sunny-bg.webp
     #icons
+    - res/icons/arrow-icon.webp
     - res/icons/cloudy-icon.webp
     - res/icons/heavyrain-icon.webp
     - res/icons/lightrain-icon.webp

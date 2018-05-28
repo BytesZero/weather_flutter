@@ -32,6 +32,9 @@ class WeatherHomeState extends State<WeaterHome> {
     'snow': '雪'
   };
 
+  ///今天天气详细信息
+  var todayWeather;
+
   ///forecast list
   List forecast;
 
@@ -79,15 +82,15 @@ class WeatherHomeState extends State<WeaterHome> {
   ///homeBody
   Widget homeBody() {
     return new Container(
-      ///顶部居中对齐
-      alignment: Alignment.center,
+      ///底部居中对齐
+      alignment: Alignment.bottomCenter,
       height: 380.0,
 
       ///装饰背景图片
       decoration: new BoxDecoration(
         image: new DecorationImage(
           alignment: Alignment.topCenter,
-          fit: BoxFit.fill,
+          fit: BoxFit.fitWidth,
           image: new AssetImage(weatherImage),
         ),
       ),
@@ -109,6 +112,63 @@ class WeatherHomeState extends State<WeaterHome> {
           new Text(
             weather,
             style: new TextStyle(fontSize: 18.0, color: Colors.black38),
+          ),
+          new Padding(
+            padding: new EdgeInsets.symmetric(vertical: 40.0),
+          ),
+          todayWeatherDetails(),
+        ],
+      ),
+    );
+  }
+
+  ///今天的详细天气信息
+  Widget todayWeatherDetails() {
+    ///计算今天的时间
+    DateTime dateTime = new DateTime.now();
+    String todayTime = "${dateTime.year}-${dateTime.month}-${dateTime.day} 今天";
+    String todayWeatherDetails = "0° ~ 0°";
+    print("todayWeather:$todayWeather");
+    if (todayWeather != null) {
+      todayWeatherDetails =
+          "${todayWeather['minTemp']}° ~ ${todayWeather['maxTemp']}°";
+    }
+    return new Container(
+      height: 49.0,
+      padding: new EdgeInsets.symmetric(vertical: 14.0),
+      margin: new EdgeInsets.symmetric(horizontal: 16.0),
+      decoration: new BoxDecoration(
+        ///Border
+        border: new Border(
+            top: new BorderSide(
+          color: Colors.black38,
+          style: BorderStyle.solid,
+          width: 0.2,
+        )),
+      ),
+      child: new Row(
+        mainAxisSize: MainAxisSize.max,
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          new Text(
+            todayTime,
+            style: new TextStyle(color: Colors.black45),
+          ),
+          new Row(
+            mainAxisSize: MainAxisSize.max,
+            mainAxisAlignment: MainAxisAlignment.end,
+            children: <Widget>[
+              new Text(
+                todayWeatherDetails,
+                style: new TextStyle(color: Colors.black45),
+              ),
+              new Padding(padding: new EdgeInsets.symmetric(horizontal: 2.0)),
+              new Image.asset(
+                'res/icons/arrow-icon.webp',
+                height: 12.0,
+                fit: BoxFit.contain,
+              ),
+            ],
           )
         ],
       ),
@@ -125,8 +185,8 @@ class WeatherHomeState extends State<WeaterHome> {
         children: <Widget>[
           new Image.asset(
             'res/icons/time-icon.webp',
-            width: 18.0,
-            fit: BoxFit.fitWidth,
+            width: 16.0,
+            fit: BoxFit.contain,
           ),
           new Text(
             "未来24小时天气预测",
@@ -156,6 +216,7 @@ class WeatherHomeState extends State<WeaterHome> {
     );
   }
 
+  ///未来天气视图item
   Widget buildForeCastItem(forecastItem) {
     String forecastWeather = forecastItem['weather'];
     int forecastTemp = forecastItem['temp'];
@@ -172,22 +233,22 @@ class WeatherHomeState extends State<WeaterHome> {
           new Padding(
             child: new Text("${(newHour + forecaseId * 3) % 24}时",
                 style: new TextStyle(
-                  color: Colors.black54,
-                  fontSize: 18.0,
+                  color: Colors.black38,
+                  fontSize: 16.0,
                 )),
             padding: new EdgeInsets.only(top: 12.0, bottom: 12.0),
           ),
           new Image.asset(
             'res/icons/$forecastWeather-icon.webp',
-            width: 36.0,
-            fit: BoxFit.fitWidth,
+            width: 32.0,
+            fit: BoxFit.contain,
           ),
           new Padding(
             padding: new EdgeInsets.only(top: 12.0, bottom: 12.0),
             child: new Text(
               "$forecastTemp°",
               style: new TextStyle(
-                color: Colors.black87,
+                color: Colors.black54,
                 fontSize: 18.0,
               ),
               textAlign: TextAlign.center,
@@ -211,11 +272,16 @@ class WeatherHomeState extends State<WeaterHome> {
       var responseBody = await response.transform(UTF8.decoder).join();
       print("responseBody: $responseBody");
       var data = JSON.decode(responseBody);
+
+      ///更新数据
       setState(() {
+        //现在天气信息
         temp = data['result']['now']['temp'];
         String tempWeather = data['result']['now']['weather'];
         weatherImage = 'res/backgrounds/$tempWeather-bg.webp';
         weather = weatherMap[tempWeather];
+        //今天天气
+        todayWeather = data['result']['today'];
         //设置未来几个小时的天气
         forecast = data['result']['forecast'];
       });
