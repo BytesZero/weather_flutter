@@ -216,6 +216,7 @@ class WeatherHomeState extends State<WeaterHome> {
         String tempWeather = data['result']['now']['weather'];
         weatherImage = 'res/backgrounds/$tempWeather-bg.webp';
         weather = weatherMap[tempWeather];
+        //设置未来几个小时的天气
         forecast = data['result']['forecast'];
       });
     }
