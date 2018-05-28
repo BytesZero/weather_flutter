@@ -35,6 +35,12 @@ flutter:
     - res/backgrounds/snow-bg.webp
     - res/backgrounds/sunny-bg.webp
     #icons
+    - res/icons/cloudy-icon.webp
+    - res/icons/heavyrain-icon.webp
+    - res/icons/lightrain-icon.webp
+    - res/icons/overcast-icon.webp
+    - res/icons/snow-icon.webp
+    - res/icons/sunny-icon.webp
     - res/icons/time-icon.webp
   #  - images/a_dot_ham.jpeg
 

@@ -60,6 +60,7 @@ class WeatherHomeState extends State<WeaterHome> {
                   delegate: new SliverChildListDelegate(<Widget>[
                     homeBody(),
                     timeTips(),
+                    buildForeCast(),
                   ]),
                 )
               ],
@@ -131,6 +132,39 @@ class WeatherHomeState extends State<WeaterHome> {
           ),
         ],
       ),
+    );
+  }
+
+  ///未来天气视图
+  Widget buildForeCast() {
+    return new Container(
+      height: 100.0,
+      child: new ListView(
+        scrollDirection: Axis.horizontal,
+        children: <Widget>[
+          buildForeCastItem(),
+          buildForeCastItem(),
+          buildForeCastItem(),
+          buildForeCastItem(),
+          buildForeCastItem(),
+          buildForeCastItem(),
+          buildForeCastItem()
+        ],
+      ),
+    );
+  }
+
+  Widget buildForeCastItem() {
+    return new Container(
+      padding: new EdgeInsets.only(left: 6.0, right: 6.0),
+      margin: new EdgeInsets.only(left: 6.0, right: 6.0),
+      alignment: Alignment.center,
+      decoration: new BoxDecoration(
+        color: Colors.blue[500],
+        border: new Border.all(color: Colors.black45, width: 0.5),
+        borderRadius: new BorderRadius.circular(5.0),
+      ),
+      child: new Text("CastItem"),
     );
   }
 
