@@ -7,7 +7,18 @@ class ListPage extends StatelessWidget {
     return MaterialApp(
       title: "List Page",
       theme: new ThemeData(primarySwatch: Colors.blue),
-      home: new WeatherListBody(),
+      home: new Scaffold(
+        appBar: new AppBar(
+          leading: new IconButton(
+              icon: new Icon(Icons.arrow_back),
+              onPressed: () {
+                Navigator.pop(context);
+              }),
+          title: new Text("List Page"),
+          centerTitle: true,
+        ),
+        body: new WeatherListBody(),
+      ),
       debugShowCheckedModeBanner: false,
     );
   }
@@ -23,14 +34,8 @@ class WeatherListBody extends StatefulWidget {
 class WeatherListBodyState extends State<WeatherListBody> {
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("List Page"),
-        centerTitle: true,
-      ),
-      body: new Center(
-        child: new Text("List"),
-      ),
+    return new Center(
+      child: new Text("List"),
     );
   }
 }

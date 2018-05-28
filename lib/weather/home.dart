@@ -13,10 +13,12 @@ class HomePage extends StatelessWidget {
     return new MaterialApp(
       title: 'HomePage',
       theme: new ThemeData(primarySwatch: Colors.blue),
-      home: new WeatherHome(),
+      home: new Scaffold(
+        body: new WeatherHome(),
+      ),
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
-        '/list': (BuildContext context) => new ListPage(),
+        '/list': (BuildContext context) => new ListPage()
       },
     );
   }
@@ -66,30 +68,29 @@ class WeatherHomeState extends State<WeatherHome> {
 
   @override
   Widget build(BuildContext context) {
-    return new Scaffold(
-      appBar: new AppBar(
-        title: new Text("Home Page"),
-        centerTitle: true,
-      ),
-      body: new RefreshIndicator(
-          child: new CustomScrollView(
-            primary: true,
-            slivers: <Widget>[
-              new SliverList(
-                delegate: new SliverChildListDelegate(<Widget>[
-                  homeBody(),
-                  timeTips(),
-                  buildForeCast(),
-                ]),
-              )
-            ],
-          ),
-          onRefresh: _refreshHandler),
-    );
+    return homeBody();
   }
 
   ///homeBody
   Widget homeBody() {
+    return new RefreshIndicator(
+        child: new CustomScrollView(
+          primary: true,
+          slivers: <Widget>[
+            new SliverList(
+              delegate: new SliverChildListDelegate(<Widget>[
+                weatherBody(),
+                timeTips(),
+                buildForeCast(),
+              ]),
+            )
+          ],
+        ),
+        onRefresh: _refreshHandler);
+  }
+
+  ///weatherBody
+  Widget weatherBody() {
     return new Container(
       ///底部居中对齐
       alignment: Alignment.bottomCenter,
@@ -137,7 +138,6 @@ class WeatherHomeState extends State<WeatherHome> {
     DateTime dateTime = new DateTime.now();
     String todayTime = "${dateTime.year}-${dateTime.month}-${dateTime.day} 今天";
     String todayWeatherDetails = "0° ~ 0°";
-    print("todayWeather:$todayWeather");
     if (todayWeather != null) {
       todayWeatherDetails =
           "${todayWeather['minTemp']}° ~ ${todayWeather['maxTemp']}°";
@@ -221,7 +221,6 @@ class WeatherHomeState extends State<WeatherHome> {
         itemCount: forecast == null ? 0 : forecast.length,
         itemBuilder: (BuildContext context, int index) {
           var forecastItem = forecast[index];
-          print("forcastItem:$forecastItem");
           return buildForeCastItem(forecastItem);
         },
       ),
@@ -314,6 +313,7 @@ class WeatherHomeState extends State<WeatherHome> {
 
   ///去天气预报页面
   void _goWeatherListPage() {
+    print("_goWeatherListPage");
     Navigator.pushNamed(context, '/list');
   }
 }
