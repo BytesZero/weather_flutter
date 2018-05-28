@@ -31,6 +31,11 @@ class WeatherHomeState extends State<WeaterHome> {
     'heavyrain': '大雨',
     'snow': '雪'
   };
+
+  ///forecast list
+  List forecast;
+
+  ///下拉刷新使用
   Completer<Null> completer;
 
   @override
@@ -127,7 +132,7 @@ class WeatherHomeState extends State<WeaterHome> {
             "未来24小时天气预测",
             style: new TextStyle(
               color: Colors.black45,
-              fontSize: 14.0,
+              fontSize: 16.0,
             ),
           ),
         ],
@@ -138,33 +143,59 @@ class WeatherHomeState extends State<WeaterHome> {
   ///未来天气视图
   Widget buildForeCast() {
     return new Container(
-      height: 100.0,
-      child: new ListView(
+      height: 260.0,
+      child: new ListView.builder(
         scrollDirection: Axis.horizontal,
-        children: <Widget>[
-          buildForeCastItem(),
-          buildForeCastItem(),
-          buildForeCastItem(),
-          buildForeCastItem(),
-          buildForeCastItem(),
-          buildForeCastItem(),
-          buildForeCastItem()
-        ],
+        itemCount: forecast == null ? 0 : forecast.length,
+        itemBuilder: (BuildContext context, int index) {
+          var forecastItem = forecast[index];
+          print("forcastItem:$forecastItem");
+          return buildForeCastItem(forecastItem);
+        },
       ),
     );
   }
 
-  Widget buildForeCastItem() {
+  Widget buildForeCastItem(forecastItem) {
+    String forecastWeather = forecastItem['weather'];
+    int forecastTemp = forecastItem['temp'];
+    int forecaseId = forecastItem['id'];
+    int newHour = new DateTime.now().hour;
     return new Container(
       padding: new EdgeInsets.only(left: 6.0, right: 6.0),
-      margin: new EdgeInsets.only(left: 6.0, right: 6.0),
-      alignment: Alignment.center,
-      decoration: new BoxDecoration(
-        color: Colors.blue[500],
-        border: new Border.all(color: Colors.black45, width: 0.5),
-        borderRadius: new BorderRadius.circular(5.0),
+      margin: new EdgeInsets.only(left: 8.0, right: 8.0),
+      alignment: Alignment.topCenter,
+      child: new Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        mainAxisSize: MainAxisSize.min,
+        children: <Widget>[
+          new Padding(
+            child: new Text("${(newHour + forecaseId * 3) % 24}时",
+                style: new TextStyle(
+                  color: Colors.black54,
+                  fontSize: 18.0,
+                )),
+            padding: new EdgeInsets.only(top: 12.0, bottom: 12.0),
+          ),
+          new Image.asset(
+            'res/icons/$forecastWeather-icon.webp',
+            width: 36.0,
+            fit: BoxFit.fitWidth,
+          ),
+          new Padding(
+            padding: new EdgeInsets.only(top: 12.0, bottom: 12.0),
+            child: new Text(
+              "$forecastTemp°",
+              style: new TextStyle(
+                color: Colors.black87,
+                fontSize: 18.0,
+              ),
+              textAlign: TextAlign.center,
+              maxLines: 1,
+            ),
+          )
+        ],
       ),
-      child: new Text("CastItem"),
     );
   }
 
@@ -179,12 +210,14 @@ class WeatherHomeState extends State<WeaterHome> {
     if (response.statusCode == HttpStatus.OK) {
       var responseBody = await response.transform(UTF8.decoder).join();
       print("responseBody: $responseBody");
-      var date = JSON.decode(responseBody);
+      var data = JSON.decode(responseBody);
       setState(() {
-        temp = date['result']['now']['temp'];
-        String tempWeather = date['result']['now']['weather'];
+        temp = data['result']['now']['temp'];
+        String tempWeather = data['result']['now']['weather'];
         weatherImage = 'res/backgrounds/$tempWeather-bg.webp';
         weather = weatherMap[tempWeather];
+        //设置未来几个小时的天气
+        forecast = data['result']['forecast'];
       });
     }
 
