@@ -5,6 +5,11 @@ import 'dart:convert';
 
 ///未来7天天气列表
 class ListPage extends StatelessWidget {
+  ListPage(this.locationCity);
+
+  //城市
+  String locationCity = '西安市';
+
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
@@ -20,7 +25,7 @@ class ListPage extends StatelessWidget {
           title: new Text("未来一周天气"),
           centerTitle: true,
         ),
-        body: new WeatherListBody(),
+        body: new WeatherListBody(locationCity),
       ),
       debugShowCheckedModeBanner: false,
     );
@@ -29,12 +34,23 @@ class ListPage extends StatelessWidget {
 
 ///天气预报列表
 class WeatherListBody extends StatefulWidget {
+  //城市
+  var locationCity = '西安市';
+
+  WeatherListBody(this.locationCity);
+
   @override
-  State<StatefulWidget> createState() => new WeatherListBodyState();
+  State<StatefulWidget> createState() =>
+      new WeatherListBodyState(this.locationCity);
 }
 
 ///天气预报列表 状态
 class WeatherListBodyState extends State<WeatherListBody> {
+  //城市
+  var locationCity = '西安市';
+
+  WeatherListBodyState(this.locationCity);
+
   //刷新
   Completer<Null> completer;
 
@@ -87,8 +103,10 @@ class WeatherListBodyState extends State<WeatherListBody> {
 
     return new Container(
       padding: new EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-      decoration: new BoxDecoration(border: new Border(bottom: new BorderSide(
-          color: Colors.grey, width: 0.2, style: BorderStyle.solid))),
+      decoration: new BoxDecoration(
+          border: new Border(
+              bottom: new BorderSide(
+                  color: Colors.grey, width: 0.2, style: BorderStyle.solid))),
       child: new Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
@@ -129,12 +147,12 @@ class WeatherListBodyState extends State<WeatherListBody> {
   void getWeekWeather() async {
     var client = new HttpClient();
     var url = Uri.parse(
-        "https://test-miniprogram.com/api/weather/future?city=北京市&time=1527560564");
+        "https://test-miniprogram.com/api/weather/future?city=$locationCity&time=${new DateTime
+            .now().millisecondsSinceEpoch}");
     var request = await client.getUrl(url);
     var response = await request.close();
     if (response.statusCode == HttpStatus.OK) {
       var responseBody = await response.transform(UTF8.decoder).join();
-      print("responseBody:$responseBody");
       var data = JSON.decode(responseBody);
       setState(() {
         weekWeather = data['result'];
