@@ -112,6 +112,9 @@ class WeatherHomeState extends State<WeatherHome> {
 
         ///主体居中
         children: <Widget>[
+          buildLocation(),
+          new Padding(padding: new EdgeInsets.symmetric(vertical: 20.0)),
+
           ///温度
           new Text(
             "$temp°",
@@ -129,6 +132,36 @@ class WeatherHomeState extends State<WeatherHome> {
           todayWeatherDetails(),
         ],
       ),
+    );
+  }
+
+  ///位置信息
+  Widget buildLocation() {
+    return new Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        new Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            new Image.asset(
+              'res/icons/location-icon.webp',
+              height: 15.0,
+              fit: BoxFit.contain,
+            ),
+            new Padding(padding: new EdgeInsets.symmetric(horizontal: 2.0)),
+            new Text(
+              '北京市',
+              style: new TextStyle(fontSize: 16.0, color: Colors.black45),
+            ),
+          ],
+        ),
+        new Padding(padding: new EdgeInsets.symmetric(vertical: 2.0)),
+        new GestureDetector(
+          onTap: _getLocation,
+          child: new Text("点击更新位置"),
+        )
+      ],
     );
   }
 
@@ -287,6 +320,7 @@ class WeatherHomeState extends State<WeatherHome> {
       var responseBody = await response.transform(UTF8.decoder).join();
       print("responseBody: $responseBody");
       var data = JSON.decode(responseBody);
+
       ///更新数据
       setState(() {
         //现在天气信息
@@ -318,5 +352,11 @@ class WeatherHomeState extends State<WeatherHome> {
   void _goWeatherListPage() {
     print("_goWeatherListPage");
     Navigator.pushNamed(context, '/list');
+  }
+
+  ///获取位置信息
+  void _getLocation() {
+    final snackBar = new SnackBar(content: new Text("获取位置信息"));
+    Scaffold.of(context).showSnackBar(snackBar);
   }
 }

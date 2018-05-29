@@ -1,6 +1,7 @@
 package io.flutter.plugins;
 
 import io.flutter.plugin.common.PluginRegistry;
+import com.lyokone.location.LocationPlugin;
 
 /**
  * Generated file. Do not edit.
@@ -10,6 +11,7 @@ public final class GeneratedPluginRegistrant {
     if (alreadyRegisteredWith(registry)) {
       return;
     }
+    LocationPlugin.registerWith(registry.registrarFor("com.lyokone.location.LocationPlugin"));
   }
 
   private static boolean alreadyRegisteredWith(PluginRegistry registry) {
