@@ -233,6 +233,10 @@ class WeatherHomeState extends State<WeatherHome> {
     int forecastTemp = forecastItem['temp'];
     int forecaseId = forecastItem['id'];
     int newHour = new DateTime.now().hour;
+    var itemTime = forecaseId == 0
+        ? '现在'
+        : '${(newHour + forecaseId * 3) %
+        24}时';
     return new Container(
       padding: new EdgeInsets.only(left: 6.0, right: 6.0),
       margin: new EdgeInsets.only(left: 8.0, right: 8.0),
@@ -242,7 +246,7 @@ class WeatherHomeState extends State<WeatherHome> {
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           new Padding(
-            child: new Text("${(newHour + forecaseId * 3) % 24}时",
+            child: new Text("$itemTime",
                 style: new TextStyle(
                   color: Colors.black38,
                   fontSize: 16.0,

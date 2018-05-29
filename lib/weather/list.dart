@@ -14,7 +14,7 @@ class ListPage extends StatelessWidget {
               onPressed: () {
                 Navigator.pop(context);
               }),
-          title: new Text("List Page"),
+          title: new Text("未来七天的天气"),
           centerTitle: true,
         ),
         body: new WeatherListBody(),
