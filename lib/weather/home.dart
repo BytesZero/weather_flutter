@@ -287,7 +287,6 @@ class WeatherHomeState extends State<WeatherHome> {
       var responseBody = await response.transform(UTF8.decoder).join();
       print("responseBody: $responseBody");
       var data = JSON.decode(responseBody);
-
       ///更新数据
       setState(() {
         //现在天气信息
