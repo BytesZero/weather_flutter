@@ -1,10 +1,11 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/rendering.dart';
 import 'list.dart';
+import 'package:location/location.dart';
+import 'package:flutter/services.dart';
 
 ///HomePage
 class HomePage extends StatelessWidget {
@@ -18,7 +19,9 @@ class HomePage extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
-        '/list': (BuildContext context) => new ListPage()
+        '/list': (BuildContext context) => new ListPage(
+              locationCity: WeatherHomeState.locationCity,
+            ),
       },
     );
   }
@@ -32,16 +35,23 @@ class WeatherHome extends StatefulWidget {
 
 ///绘制Weather页
 class WeatherHomeState extends State<WeatherHome> {
-  ///温度
+  //位置信息
+  Map<String, double> _currentLocation;
+  Location _location = new Location();
+
+  //城市
+  static String locationCity = '西安市';
+
+  //温度
   var temp = 0;
 
-  ///天气描述
+  //天气描述
   var weather = '数据获取中...';
 
-  ///天气描述对应的背景图片
+  //天气描述对应的背景图片
   var weatherImage = 'res/backgrounds/sunny-bg.webp';
 
-  ///天气转换的映射
+  //天气转换的映射
   var weatherMap = {
     'sunny': '晴天',
     'cloudy': '多云',
@@ -51,13 +61,13 @@ class WeatherHomeState extends State<WeatherHome> {
     'snow': '雪'
   };
 
-  ///今天天气详细信息
+  //今天天气详细信息
   var todayWeather;
 
-  ///forecast list
+  //forecast list
   List forecast;
 
-  ///下拉刷新使用
+  //下拉刷新使用
   Completer<Null> completer;
 
   @override
@@ -100,7 +110,7 @@ class WeatherHomeState extends State<WeatherHome> {
       decoration: new BoxDecoration(
         image: new DecorationImage(
           alignment: Alignment.topCenter,
-          fit: BoxFit.fitWidth,
+          fit: BoxFit.fill,
           image: new AssetImage(weatherImage),
         ),
       ),
@@ -112,6 +122,9 @@ class WeatherHomeState extends State<WeatherHome> {
 
         ///主体居中
         children: <Widget>[
+          buildLocation(),
+          new Padding(padding: new EdgeInsets.symmetric(vertical: 20.0)),
+
           ///温度
           new Text(
             "$temp°",
@@ -129,6 +142,36 @@ class WeatherHomeState extends State<WeatherHome> {
           todayWeatherDetails(),
         ],
       ),
+    );
+  }
+
+  ///位置信息
+  Widget buildLocation() {
+    return new Column(
+      mainAxisAlignment: MainAxisAlignment.center,
+      mainAxisSize: MainAxisSize.min,
+      children: <Widget>[
+        new Row(
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            new Image.asset(
+              'res/icons/location-icon.webp',
+              height: 15.0,
+              fit: BoxFit.contain,
+            ),
+            new Padding(padding: new EdgeInsets.symmetric(horizontal: 2.0)),
+            new Text(
+              '$locationCity',
+              style: new TextStyle(fontSize: 16.0, color: Colors.black45),
+            ),
+          ],
+        ),
+        new Padding(padding: new EdgeInsets.symmetric(vertical: 2.0)),
+        new GestureDetector(
+          onTap: _getLocation,
+          child: new Text("点击更新位置"),
+        )
+      ],
     );
   }
 
@@ -215,7 +258,7 @@ class WeatherHomeState extends State<WeatherHome> {
   ///未来天气视图
   Widget buildForeCast() {
     return new Container(
-      height: 260.0,
+      height: 132.0,
       child: new ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: forecast == null ? 0 : forecast.length,
@@ -279,14 +322,15 @@ class WeatherHomeState extends State<WeatherHome> {
   void getWeather() async {
     ///创建client
     var httpClient = new HttpClient();
-    var uri =
-        Uri.parse('https://test-miniprogram.com/api/weather/now?city=北京市');
+    var uri = Uri.parse(
+        'https://test-miniprogram.com/api/weather/now?city=$locationCity');
     var request = await httpClient.getUrl(uri);
     var response = await request.close();
-    if (response.statusCode == HttpStatus.OK) {
-      var responseBody = await response.transform(UTF8.decoder).join();
+    if (response.statusCode == HttpStatus.ok) {
+      var responseBody = await response.transform(utf8.decoder).join();
       print("responseBody: $responseBody");
-      var data = JSON.decode(responseBody);
+      var data = json.decode(responseBody);
+
       ///更新数据
       setState(() {
         //现在天气信息
@@ -318,5 +362,53 @@ class WeatherHomeState extends State<WeatherHome> {
   void _goWeatherListPage() {
     print("_goWeatherListPage");
     Navigator.pushNamed(context, '/list');
+  }
+
+  ///获取位置信息
+  Future<void> _getLocation() async {
+    var error = '成功';
+    try {
+      //获取经纬度
+      _currentLocation = await _location.getLocation();
+    } on PlatformException catch (e) {
+      if (e.code == 'PERMISSION_DENIED') {
+        error = 'Permission denied';
+      } else if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {
+        error =
+            'Permission denied - please ask the user to enable it from the app settings';
+      }
+      _currentLocation = null;
+    }
+
+    if (_currentLocation != null) {
+      var latitude = _currentLocation['latitude'];
+      var longitude = _currentLocation['longitude'];
+      //获取city
+      var uri = Uri.parse(
+          'http://apis.map.qq.com/ws/geocoder/v1/?location=$latitude,$longitude&key=ZUHBZ-IUNEF-OTUJD-JBHX3-3YZ6Z-I7FSL');
+      var httpClient = new HttpClient();
+      var request = await httpClient.getUrl(uri);
+      var response = await request.close();
+      if (response.statusCode == HttpStatus.ok) {
+        var responseBody = await response.transform(utf8.decoder).join();
+        print("responseBody: $responseBody");
+        var data = json.decode(responseBody);
+        var city = data['result']['address_component']['city'];
+        if (city != null) {
+          if (locationCity != city) {
+            getWeather();
+          }
+          //更新城市
+          setState(() {
+            locationCity = city;
+          });
+          final snackBar = new SnackBar(content: new Text("获取位置信息，更新成功"));
+          Scaffold.of(context).showSnackBar(snackBar);
+        }
+      }
+    } else {
+      final snackBar = new SnackBar(content: new Text("位置信息获取失败，请检查一下权限"));
+      Scaffold.of(context).showSnackBar(snackBar);
+    }
   }
 }
