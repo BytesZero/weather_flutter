@@ -1,8 +1,7 @@
-import 'dart:convert';
-
 import 'package:flutter/material.dart';
 import 'dart:io';
 import 'dart:async';
+import 'dart:convert';
 import 'package:flutter/rendering.dart';
 import 'list.dart';
 import 'package:location/location.dart';
@@ -20,7 +19,9 @@ class HomePage extends StatelessWidget {
       ),
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
-        '/list': (BuildContext context) => new ListPage(WeatherHomeState.locationCity),
+        '/list': (BuildContext context) => new ListPage(
+              locationCity: WeatherHomeState.locationCity,
+            ),
       },
     );
   }
@@ -109,7 +110,7 @@ class WeatherHomeState extends State<WeatherHome> {
       decoration: new BoxDecoration(
         image: new DecorationImage(
           alignment: Alignment.topCenter,
-          fit: BoxFit.fitWidth,
+          fit: BoxFit.fill,
           image: new AssetImage(weatherImage),
         ),
       ),
@@ -257,7 +258,7 @@ class WeatherHomeState extends State<WeatherHome> {
   ///未来天气视图
   Widget buildForeCast() {
     return new Container(
-      height: 260.0,
+      height: 132.0,
       child: new ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: forecast == null ? 0 : forecast.length,
@@ -325,10 +326,10 @@ class WeatherHomeState extends State<WeatherHome> {
         'https://test-miniprogram.com/api/weather/now?city=$locationCity');
     var request = await httpClient.getUrl(uri);
     var response = await request.close();
-    if (response.statusCode == HttpStatus.OK) {
-      var responseBody = await response.transform(UTF8.decoder).join();
+    if (response.statusCode == HttpStatus.ok) {
+      var responseBody = await response.transform(utf8.decoder).join();
       print("responseBody: $responseBody");
-      var data = JSON.decode(responseBody);
+      var data = json.decode(responseBody);
 
       ///更新数据
       setState(() {
@@ -364,11 +365,11 @@ class WeatherHomeState extends State<WeatherHome> {
   }
 
   ///获取位置信息
-  void _getLocation() async {
+  Future<void> _getLocation() async {
     var error = '成功';
     try {
       //获取经纬度
-      _currentLocation = await _location.getLocation;
+      _currentLocation = await _location.getLocation();
     } on PlatformException catch (e) {
       if (e.code == 'PERMISSION_DENIED') {
         error = 'Permission denied';
@@ -388,10 +389,10 @@ class WeatherHomeState extends State<WeatherHome> {
       var httpClient = new HttpClient();
       var request = await httpClient.getUrl(uri);
       var response = await request.close();
-      if (response.statusCode == HttpStatus.OK) {
-        var responseBody = await response.transform(UTF8.decoder).join();
+      if (response.statusCode == HttpStatus.ok) {
+        var responseBody = await response.transform(utf8.decoder).join();
         print("responseBody: $responseBody");
-        var data = JSON.decode(responseBody);
+        var data = json.decode(responseBody);
         var city = data['result']['address_component']['city'];
         if (city != null) {
           if (locationCity != city) {
@@ -401,9 +402,7 @@ class WeatherHomeState extends State<WeatherHome> {
           setState(() {
             locationCity = city;
           });
-          final snackBar = new SnackBar(
-              content: new Text(
-                  "获取位置信息，更新成功"));
+          final snackBar = new SnackBar(content: new Text("获取位置信息，更新成功"));
           Scaffold.of(context).showSnackBar(snackBar);
         }
       }

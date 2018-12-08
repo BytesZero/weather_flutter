@@ -5,10 +5,10 @@ import 'dart:convert';
 
 ///未来7天天气列表
 class ListPage extends StatelessWidget {
-  ListPage(this.locationCity);
+  ListPage({Key key, this.locationCity = '西安市'}) : super(key: key);
 
   //城市
-  String locationCity = '西安市';
+  String locationCity;
 
   @override
   Widget build(BuildContext context) {
@@ -25,7 +25,9 @@ class ListPage extends StatelessWidget {
           title: new Text("未来一周天气"),
           centerTitle: true,
         ),
-        body: new WeatherListBody(locationCity),
+        body: new WeatherListBody(
+          locationCity: locationCity,
+        ),
       ),
       debugShowCheckedModeBanner: false,
     );
@@ -35,22 +37,17 @@ class ListPage extends StatelessWidget {
 ///天气预报列表
 class WeatherListBody extends StatefulWidget {
   //城市
-  var locationCity = '西安市';
 
-  WeatherListBody(this.locationCity);
+  WeatherListBody({Key key, this.locationCity}) : super(key: key);
+
+  final String locationCity;
 
   @override
-  State<StatefulWidget> createState() =>
-      new WeatherListBodyState(this.locationCity);
+  State<StatefulWidget> createState() => new WeatherListBodyState();
 }
 
 ///天气预报列表 状态
 class WeatherListBodyState extends State<WeatherListBody> {
-  //城市
-  var locationCity = '西安市';
-
-  WeatherListBodyState(this.locationCity);
-
   //刷新
   Completer<Null> completer;
 
@@ -146,14 +143,15 @@ class WeatherListBodyState extends State<WeatherListBody> {
   /// 获取一周的天气
   void getWeekWeather() async {
     var client = new HttpClient();
-    var url = Uri.parse(
-        "https://test-miniprogram.com/api/weather/future?city=$locationCity&time=${new DateTime
-            .now().millisecondsSinceEpoch}");
+    var url =
+        Uri.parse("https://test-miniprogram.com/api/weather/future?city=${widget
+        .locationCity}&time=${new DateTime
+        .now().millisecondsSinceEpoch}");
     var request = await client.getUrl(url);
     var response = await request.close();
-    if (response.statusCode == HttpStatus.OK) {
-      var responseBody = await response.transform(UTF8.decoder).join();
-      var data = JSON.decode(responseBody);
+    if (response.statusCode == HttpStatus.ok) {
+      var responseBody = await response.transform(utf8.decoder).join();
+      var data = json.decode(responseBody);
       setState(() {
         weekWeather = data['result'];
       });
