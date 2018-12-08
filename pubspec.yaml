@@ -8,6 +8,7 @@ dependencies:
   # The following adds the Cupertino Icons font to your application.
   # Use with the CupertinoIcons class for iOS style icons.
   cupertino_icons: ^0.1.2
+  location: ^1.3.0
 
 dev_dependencies:
   flutter_test:
@@ -39,6 +40,7 @@ flutter:
     - res/icons/cloudy-icon.webp
     - res/icons/heavyrain-icon.webp
     - res/icons/lightrain-icon.webp
+    - res/icons/location-icon.webp
     - res/icons/overcast-icon.webp
     - res/icons/snow-icon.webp
     - res/icons/sunny-icon.webp
