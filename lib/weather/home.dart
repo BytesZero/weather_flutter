@@ -276,10 +276,8 @@ class WeatherHomeState extends State<WeatherHome> {
     int forecastTemp = forecastItem['temp'];
     int forecaseId = forecastItem['id'];
     int newHour = new DateTime.now().hour;
-    var itemTime = forecaseId == 0
-        ? '现在'
-        : '${(newHour + forecaseId * 3) %
-        24}时';
+    var itemTime =
+        forecaseId == 0 ? '现在' : '${(newHour + forecaseId * 3) % 24}时';
     return new Container(
       padding: new EdgeInsets.only(left: 6.0, right: 6.0),
       margin: new EdgeInsets.only(left: 8.0, right: 8.0),
@@ -322,8 +320,11 @@ class WeatherHomeState extends State<WeatherHome> {
   void getWeather() async {
     ///创建client
     var httpClient = new HttpClient();
+    // var uri = Uri.parse(
+    //     'https://test-miniprogram.com/api/weather/now?city=$locationCity');
+    /// 由于动态接口停止服务，所以改为固定模拟数据
     var uri = Uri.parse(
-        'https://test-miniprogram.com/api/weather/now?city=$locationCity');
+        'https://raw.githubusercontent.com/yy1300326388/weather_flutter/master/api/weather_now.json');
     var request = await httpClient.getUrl(uri);
     var response = await request.close();
     if (response.statusCode == HttpStatus.ok) {

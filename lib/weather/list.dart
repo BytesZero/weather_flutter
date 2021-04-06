@@ -143,10 +143,13 @@ class WeatherListBodyState extends State<WeatherListBody> {
   /// 获取一周的天气
   void getWeekWeather() async {
     var client = new HttpClient();
-    var url =
-        Uri.parse("https://test-miniprogram.com/api/weather/future?city=${widget
-        .locationCity}&time=${new DateTime
-        .now().millisecondsSinceEpoch}");
+    // var url =
+    //     Uri.parse("https://test-miniprogram.com/api/weather/future?city=${widget
+    //     .locationCity}&time=${new DateTime
+    //     .now().millisecondsSinceEpoch}");
+    /// 由于动态接口停止服务，所以改为固定模拟数据
+    var url = Uri.parse(
+        "https://raw.githubusercontent.com/yy1300326388/weather_flutter/master/api/weather_future.json");
     var request = await client.getUrl(url);
     var response = await request.close();
     if (response.statusCode == HttpStatus.ok) {
