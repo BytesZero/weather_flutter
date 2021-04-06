@@ -1,0 +1,56 @@
+{
+    "code": 200,
+    "message": "success",
+    "result": {
+        "now": {
+            "temp": 0,
+            "weather": "lightrain"
+        },
+        "today": {
+            "minTemp": 0,
+            "maxTemp": 11
+        },
+        "forecast": [
+            {
+                "weather": "lightrain",
+                "temp": 0,
+                "id": 0
+            },
+            {
+                "weather": "lightrain",
+                "temp": -2,
+                "id": 1
+            },
+            {
+                "weather": "lightrain",
+                "temp": 11,
+                "id": 2
+            },
+            {
+                "weather": "sunny",
+                "temp": 18,
+                "id": 3
+            },
+            {
+                "weather": "lightrain",
+                "temp": 8,
+                "id": 4
+            },
+            {
+                "weather": "sunny",
+                "temp": 10,
+                "id": 5
+            },
+            {
+                "weather": "lightrain",
+                "temp": 1,
+                "id": 6
+            },
+            {
+                "weather": "heavyrain",
+                "temp": -7,
+                "id": 7
+            }
+        ]
+    }
+}
