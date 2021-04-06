@@ -13,9 +13,9 @@ class HomePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return new MaterialApp(
       title: 'HomePage',
-      theme: new ThemeData(primarySwatch: Colors.blue),
-      home: new Scaffold(
-        body: new WeatherHome(),
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: Scaffold(
+        body: WeatherHome(),
       ),
       debugShowCheckedModeBanner: false,
       routes: <String, WidgetBuilder>{
@@ -67,9 +67,6 @@ class WeatherHomeState extends State<WeatherHome> {
   //forecast list
   List forecast;
 
-  //下拉刷新使用
-  Completer<Null> completer;
-
   @override
   void initState() {
     super.initState();
@@ -84,11 +81,11 @@ class WeatherHomeState extends State<WeatherHome> {
   ///homeBody
   Widget homeBody() {
     return new RefreshIndicator(
-        child: new CustomScrollView(
+        child: CustomScrollView(
           primary: true,
           slivers: <Widget>[
             new SliverList(
-              delegate: new SliverChildListDelegate(<Widget>[
+              delegate: SliverChildListDelegate(<Widget>[
                 weatherBody(),
                 timeTips(),
                 buildForeCast(),
@@ -107,15 +104,15 @@ class WeatherHomeState extends State<WeatherHome> {
       height: 380.0,
 
       ///装饰背景图片
-      decoration: new BoxDecoration(
-        image: new DecorationImage(
+      decoration: BoxDecoration(
+        image: DecorationImage(
           alignment: Alignment.topCenter,
           fit: BoxFit.fill,
-          image: new AssetImage(weatherImage),
+          image: AssetImage(weatherImage),
         ),
       ),
 
-      child: new Column(
+      child: Column(
         ///最小大小，根据children计算
         mainAxisSize: MainAxisSize.min,
         mainAxisAlignment: MainAxisAlignment.center,
@@ -123,21 +120,21 @@ class WeatherHomeState extends State<WeatherHome> {
         ///主体居中
         children: <Widget>[
           buildLocation(),
-          new Padding(padding: new EdgeInsets.symmetric(vertical: 20.0)),
+          new Padding(padding: EdgeInsets.symmetric(vertical: 20.0)),
 
           ///温度
           new Text(
             "$temp°",
-            style: new TextStyle(fontSize: 64.0),
+            style: TextStyle(fontSize: 64.0),
           ),
 
           ///天气描述
           new Text(
             weather,
-            style: new TextStyle(fontSize: 18.0, color: Colors.black38),
+            style: TextStyle(fontSize: 18.0, color: Colors.black38),
           ),
           new Padding(
-            padding: new EdgeInsets.symmetric(vertical: 40.0),
+            padding: EdgeInsets.symmetric(vertical: 40.0),
           ),
           todayWeatherDetails(),
         ],
@@ -159,17 +156,17 @@ class WeatherHomeState extends State<WeatherHome> {
               height: 15.0,
               fit: BoxFit.contain,
             ),
-            new Padding(padding: new EdgeInsets.symmetric(horizontal: 2.0)),
+            new Padding(padding: EdgeInsets.symmetric(horizontal: 2.0)),
             new Text(
               '$locationCity',
-              style: new TextStyle(fontSize: 16.0, color: Colors.black45),
+              style: TextStyle(fontSize: 16.0, color: Colors.black45),
             ),
           ],
         ),
-        new Padding(padding: new EdgeInsets.symmetric(vertical: 2.0)),
+        new Padding(padding: EdgeInsets.symmetric(vertical: 2.0)),
         new GestureDetector(
           onTap: _getLocation,
-          child: new Text("点击更新位置"),
+          child: Text("点击更新位置"),
         )
       ],
     );
@@ -187,26 +184,26 @@ class WeatherHomeState extends State<WeatherHome> {
     }
     return new GestureDetector(
       onTap: _goWeatherListPage,
-      child: new Container(
+      child: Container(
         height: 49.0,
-        padding: new EdgeInsets.symmetric(vertical: 14.0),
-        margin: new EdgeInsets.symmetric(horizontal: 16.0),
-        decoration: new BoxDecoration(
+        padding: EdgeInsets.symmetric(vertical: 14.0),
+        margin: EdgeInsets.symmetric(horizontal: 16.0),
+        decoration: BoxDecoration(
           ///Border
-          border: new Border(
-              top: new BorderSide(
+          border: Border(
+              top: BorderSide(
             color: Colors.black38,
             style: BorderStyle.solid,
             width: 0.2,
           )),
         ),
-        child: new Row(
+        child: Row(
           mainAxisSize: MainAxisSize.max,
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: <Widget>[
             new Text(
               todayTime,
-              style: new TextStyle(color: Colors.black45),
+              style: TextStyle(color: Colors.black45),
             ),
             new Row(
               mainAxisSize: MainAxisSize.max,
@@ -214,9 +211,9 @@ class WeatherHomeState extends State<WeatherHome> {
               children: <Widget>[
                 new Text(
                   todayWeatherDetails,
-                  style: new TextStyle(color: Colors.black45),
+                  style: TextStyle(color: Colors.black45),
                 ),
-                new Padding(padding: new EdgeInsets.symmetric(horizontal: 2.0)),
+                new Padding(padding: EdgeInsets.symmetric(horizontal: 2.0)),
                 new Image.asset(
                   'res/icons/arrow-icon.webp',
                   height: 12.0,
@@ -234,8 +231,8 @@ class WeatherHomeState extends State<WeatherHome> {
   Widget timeTips() {
     return new Container(
       alignment: Alignment.center,
-      padding: new EdgeInsets.only(top: 6.0, bottom: 6.0),
-      child: new Row(
+      padding: EdgeInsets.only(top: 6.0, bottom: 6.0),
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.center,
         children: <Widget>[
           new Image.asset(
@@ -245,7 +242,7 @@ class WeatherHomeState extends State<WeatherHome> {
           ),
           new Text(
             "未来24小时天气预测",
-            style: new TextStyle(
+            style: TextStyle(
               color: Colors.black45,
               fontSize: 16.0,
             ),
@@ -259,7 +256,7 @@ class WeatherHomeState extends State<WeatherHome> {
   Widget buildForeCast() {
     return new Container(
       height: 132.0,
-      child: new ListView.builder(
+      child: ListView.builder(
         scrollDirection: Axis.horizontal,
         itemCount: forecast == null ? 0 : forecast.length,
         itemBuilder: (BuildContext context, int index) {
@@ -279,20 +276,20 @@ class WeatherHomeState extends State<WeatherHome> {
     var itemTime =
         forecaseId == 0 ? '现在' : '${(newHour + forecaseId * 3) % 24}时';
     return new Container(
-      padding: new EdgeInsets.only(left: 6.0, right: 6.0),
-      margin: new EdgeInsets.only(left: 8.0, right: 8.0),
+      padding: EdgeInsets.only(left: 6.0, right: 6.0),
+      margin: EdgeInsets.only(left: 8.0, right: 8.0),
       alignment: Alignment.topCenter,
-      child: new Column(
+      child: Column(
         mainAxisAlignment: MainAxisAlignment.center,
         mainAxisSize: MainAxisSize.min,
         children: <Widget>[
           new Padding(
-            child: new Text("$itemTime",
-                style: new TextStyle(
+            child: Text("$itemTime",
+                style: TextStyle(
                   color: Colors.black38,
                   fontSize: 16.0,
                 )),
-            padding: new EdgeInsets.only(top: 12.0, bottom: 12.0),
+            padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
           ),
           new Image.asset(
             'res/icons/$forecastWeather-icon.webp',
@@ -300,10 +297,10 @@ class WeatherHomeState extends State<WeatherHome> {
             fit: BoxFit.contain,
           ),
           new Padding(
-            padding: new EdgeInsets.only(top: 12.0, bottom: 12.0),
-            child: new Text(
+            padding: EdgeInsets.only(top: 12.0, bottom: 12.0),
+            child: Text(
               "$forecastTemp°",
-              style: new TextStyle(
+              style: TextStyle(
                 color: Colors.black54,
                 fontSize: 18.0,
               ),
@@ -345,18 +342,11 @@ class WeatherHomeState extends State<WeatherHome> {
         forecast = data['result']['forecast'];
       });
     }
-
-    ///完成下拉刷新
-    if (completer != null && !completer.isCompleted) {
-      completer.complete(null);
-    }
   }
 
   ///下拉刷新
-  Future<Null> _refreshHandler() async {
-    completer = new Completer<Null>();
-    getWeather();
-    return completer.future;
+  Future<void> _refreshHandler() async {
+    return getWeather();
   }
 
   ///去天气预报页面
@@ -380,6 +370,7 @@ class WeatherHomeState extends State<WeatherHome> {
       }
       _currentLocation = null;
     }
+    print(error);
 
     if (_currentLocation != null) {
       var latitude = _currentLocation['latitude'];
@@ -403,12 +394,12 @@ class WeatherHomeState extends State<WeatherHome> {
           setState(() {
             locationCity = city;
           });
-          final snackBar = new SnackBar(content: new Text("获取位置信息，更新成功"));
+          final snackBar = new SnackBar(content: Text("获取位置信息，更新成功"));
           Scaffold.of(context).showSnackBar(snackBar);
         }
       }
     } else {
-      final snackBar = new SnackBar(content: new Text("位置信息获取失败，请检查一下权限"));
+      final snackBar = new SnackBar(content: Text("位置信息获取失败，请检查一下权限"));
       Scaffold.of(context).showSnackBar(snackBar);
     }
   }

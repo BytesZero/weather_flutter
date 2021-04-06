@@ -9,3 +9,5 @@ build/
 
 .flutter-plugins
 *.lock
+ios/.symlinks
+flutter_export_environment.sh

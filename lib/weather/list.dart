@@ -8,24 +8,24 @@ class ListPage extends StatelessWidget {
   ListPage({Key key, this.locationCity = '西安市'}) : super(key: key);
 
   //城市
-  String locationCity;
+  final String locationCity;
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       title: "List Page",
-      theme: new ThemeData(primarySwatch: Colors.blue),
-      home: new Scaffold(
-        appBar: new AppBar(
-          leading: new IconButton(
-              icon: new Icon(Icons.arrow_back),
+      theme: ThemeData(primarySwatch: Colors.blue),
+      home: Scaffold(
+        appBar: AppBar(
+          leading: IconButton(
+              icon: Icon(Icons.arrow_back),
               onPressed: () {
                 Navigator.pop(context);
               }),
-          title: new Text("未来一周天气"),
+          title: Text("未来一周天气"),
           centerTitle: true,
         ),
-        body: new WeatherListBody(
+        body: WeatherListBody(
           locationCity: locationCity,
         ),
       ),
@@ -74,7 +74,7 @@ class WeatherListBodyState extends State<WeatherListBody> {
   @override
   Widget build(BuildContext context) {
     return new RefreshIndicator(
-      child: new ListView.builder(
+      child: ListView.builder(
           scrollDirection: Axis.vertical,
           itemCount: weekWeather == null ? 0 : weekWeather.length,
           itemBuilder: (BuildContext context, int index) {
@@ -99,12 +99,12 @@ class WeatherListBodyState extends State<WeatherListBody> {
     var itemWeatherIcon = 'res/icons/$itemWeather-icon.webp';
 
     return new Container(
-      padding: new EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
-      decoration: new BoxDecoration(
-          border: new Border(
-              bottom: new BorderSide(
+      padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 16.0),
+      decoration: BoxDecoration(
+          border: Border(
+              bottom: BorderSide(
                   color: Colors.grey, width: 0.2, style: BorderStyle.solid))),
-      child: new Row(
+      child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
@@ -114,11 +114,11 @@ class WeatherListBodyState extends State<WeatherListBody> {
             children: <Widget>[
               new Text(
                 "$weekday",
-                style: new TextStyle(fontSize: 20.0),
+                style: TextStyle(fontSize: 20.0),
               ),
               new Text(
                 "$dayTime",
-                style: new TextStyle(color: Colors.black45),
+                style: TextStyle(color: Colors.black45),
               ),
             ],
           ),
