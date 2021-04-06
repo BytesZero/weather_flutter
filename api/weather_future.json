@@ -3,36 +3,43 @@
     "message": "success",
     "result": [
         {
+            "id":0,
             "weather": "overcast",
             "minTemp": 3,
             "maxTemp": 13
         },
         {
+            "id":1,
             "weather": "sunny",
             "minTemp": 1,
             "maxTemp": 11
         },
         {
+            "id":2,
             "weather": "snow",
             "minTemp": -8,
             "maxTemp": -3
         },
         {
+            "id":3,
             "weather": "overcast",
             "minTemp": 3,
             "maxTemp": 17
         },
         {
+            "id":4,
             "weather": "cloudy",
             "minTemp": 3,
             "maxTemp": 19
         },
         {
+            "id":5,
             "weather": "cloudy",
             "minTemp": 6,
             "maxTemp": 8
         },
         {
+            "id":6,
             "weather": "cloudy",
             "minTemp": 5,
             "maxTemp": 8
