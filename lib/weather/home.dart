@@ -36,7 +36,9 @@ class WeatherHome extends StatefulWidget {
 ///绘制Weather页
 class WeatherHomeState extends State<WeatherHome> {
   //位置信息
-  Map<String, double> _currentLocation;
+  LocationData _currentLocation;
+  bool _serviceEnabled;
+  PermissionStatus _permissionGranted;
   Location _location = new Location();
 
   //城市
@@ -357,6 +359,25 @@ class WeatherHomeState extends State<WeatherHome> {
 
   ///获取位置信息
   Future<void> _getLocation() async {
+    _serviceEnabled = await _location.serviceEnabled();
+    if (!_serviceEnabled) {
+      _serviceEnabled = await _location.requestService();
+      if (!_serviceEnabled) {
+        final snackBar = new SnackBar(content: Text("未开启定位服务"));
+        Scaffold.of(context).showSnackBar(snackBar);
+        return;
+      }
+    }
+    // 判断权限
+    _permissionGranted = await _location.hasPermission();
+    if (_permissionGranted == PermissionStatus.denied) {
+      _permissionGranted = await _location.requestPermission();
+      if (_permissionGranted != PermissionStatus.granted) {
+        final snackBar = new SnackBar(content: Text("未开启定位权限"));
+        Scaffold.of(context).showSnackBar(snackBar);
+        return;
+      }
+    }
     var error = '成功';
     try {
       //获取经纬度
@@ -373,8 +394,8 @@ class WeatherHomeState extends State<WeatherHome> {
     print(error);
 
     if (_currentLocation != null) {
-      var latitude = _currentLocation['latitude'];
-      var longitude = _currentLocation['longitude'];
+      var latitude = _currentLocation.latitude;
+      var longitude = _currentLocation.longitude;
       //获取city
       var uri = Uri.parse(
           'http://apis.map.qq.com/ws/geocoder/v1/?location=$latitude,$longitude&key=ZUHBZ-IUNEF-OTUJD-JBHX3-3YZ6Z-I7FSL');
