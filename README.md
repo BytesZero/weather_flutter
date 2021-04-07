@@ -21,7 +21,7 @@
 
 ### 运行项目
 
-#### Flutter `>=2.0` 版本
+- #### Flutter `>=2.0` 版本
 
 请下载或克隆后切换到 `flutter2.0` 分支
 
@@ -31,7 +31,7 @@ git checkout flutter2.0
 flutter run
 ```
 
-#### Flutter `1.12.x` ~ `1.22.6` 版本
+- #### Flutter `1.12.x` ~ `1.22.6` 版本
 
 直接是用 `master` 分支即可
 
@@ -40,7 +40,7 @@ cd weather_flutter
 flutter run
 ```
 
-#### Flutter `< 1.12.x` 版本
+- #### Flutter `< 1.12.x` 版本
 
 请下载或克隆后切换到 `old_version` 分支
 
