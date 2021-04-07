@@ -50,6 +50,13 @@ git checkout old_version
 flutter run
 ```
 
+### 模拟数据
+
+因原天气接口停止服务，现添加了模拟数据，存放与项目的 `JSON` 文件
+
+- [获取当前城市天气情况](https://github.com/yy1300326388/weather_flutter/blob/master/api/weather_now.json)
+- [获取未来一周天气情况](https://github.com/yy1300326388/weather_flutter/blob/master/api/weather_future.json)
+
 ### 关注我
 
 - 遇到问题可以找我帮助解决（联系方式在 [`GitHub`](https://github.com/yy1300326388) 主页）
