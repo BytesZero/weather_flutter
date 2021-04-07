@@ -36,9 +36,8 @@ class WeatherHome extends StatefulWidget {
 ///绘制Weather页
 class WeatherHomeState extends State<WeatherHome> {
   //位置信息
-  LocationData _currentLocation;
-  bool _serviceEnabled;
-  PermissionStatus _permissionGranted;
+  bool _serviceEnabled = false;
+  PermissionStatus _permissionGranted = PermissionStatus.denied;
   Location _location = new Location();
 
   //城市
@@ -67,7 +66,7 @@ class WeatherHomeState extends State<WeatherHome> {
   var todayWeather;
 
   //forecast list
-  List forecast;
+  List? forecast;
 
   @override
   void initState() {
@@ -260,9 +259,9 @@ class WeatherHomeState extends State<WeatherHome> {
       height: 132.0,
       child: ListView.builder(
         scrollDirection: Axis.horizontal,
-        itemCount: forecast == null ? 0 : forecast.length,
+        itemCount: forecast?.length ?? 0,
         itemBuilder: (BuildContext context, int index) {
-          var forecastItem = forecast[index];
+          var forecastItem = forecast![index];
           return buildForeCastItem(forecastItem);
         },
       ),
@@ -337,7 +336,7 @@ class WeatherHomeState extends State<WeatherHome> {
         temp = data['result']['now']['temp'];
         String tempWeather = data['result']['now']['weather'];
         weatherImage = 'res/backgrounds/$tempWeather-bg.webp';
-        weather = weatherMap[tempWeather];
+        weather = weatherMap[tempWeather]!;
         //今天天气
         todayWeather = data['result']['today'];
         //设置未来几个小时的天气
@@ -363,8 +362,7 @@ class WeatherHomeState extends State<WeatherHome> {
     if (!_serviceEnabled) {
       _serviceEnabled = await _location.requestService();
       if (!_serviceEnabled) {
-        final snackBar = new SnackBar(content: Text("未开启定位服务"));
-        Scaffold.of(context).showSnackBar(snackBar);
+        showTips("未开启定位服务");
         return;
       }
     }
@@ -373,55 +371,40 @@ class WeatherHomeState extends State<WeatherHome> {
     if (_permissionGranted == PermissionStatus.denied) {
       _permissionGranted = await _location.requestPermission();
       if (_permissionGranted != PermissionStatus.granted) {
-        final snackBar = new SnackBar(content: Text("未开启定位权限"));
-        Scaffold.of(context).showSnackBar(snackBar);
+        showTips("未开启定位权限");
         return;
       }
     }
-    var error = '成功';
-    try {
-      //获取经纬度
-      _currentLocation = await _location.getLocation();
-    } on PlatformException catch (e) {
-      if (e.code == 'PERMISSION_DENIED') {
-        error = 'Permission denied';
-      } else if (e.code == 'PERMISSION_DENIED_NEVER_ASK') {
-        error =
-            'Permission denied - please ask the user to enable it from the app settings';
-      }
-      _currentLocation = null;
-    }
-    print(error);
 
-    if (_currentLocation != null) {
-      var latitude = _currentLocation.latitude;
-      var longitude = _currentLocation.longitude;
-      //获取city
-      var uri = Uri.parse(
-          'http://apis.map.qq.com/ws/geocoder/v1/?location=$latitude,$longitude&key=ZUHBZ-IUNEF-OTUJD-JBHX3-3YZ6Z-I7FSL');
-      var httpClient = new HttpClient();
-      var request = await httpClient.getUrl(uri);
-      var response = await request.close();
-      if (response.statusCode == HttpStatus.ok) {
-        var responseBody = await response.transform(utf8.decoder).join();
-        print("responseBody: $responseBody");
-        var data = json.decode(responseBody);
-        var city = data['result']['address_component']['city'];
-        if (city != null) {
-          if (locationCity != city) {
-            getWeather();
-          }
-          //更新城市
-          setState(() {
-            locationCity = city;
-          });
-          final snackBar = new SnackBar(content: Text("获取位置信息，更新成功"));
-          Scaffold.of(context).showSnackBar(snackBar);
+    LocationData _currentLocation = await _location.getLocation();
+    var latitude = _currentLocation.latitude;
+    var longitude = _currentLocation.longitude;
+    //获取city
+    var uri = Uri.parse(
+        'http://apis.map.qq.com/ws/geocoder/v1/?location=$latitude,$longitude&key=ZUHBZ-IUNEF-OTUJD-JBHX3-3YZ6Z-I7FSL');
+    var httpClient = new HttpClient();
+    var request = await httpClient.getUrl(uri);
+    var response = await request.close();
+    if (response.statusCode == HttpStatus.ok) {
+      var responseBody = await response.transform(utf8.decoder).join();
+      print("responseBody: $responseBody");
+      var data = json.decode(responseBody);
+      var city = data['result']['address_component']['city'];
+      if (city != null) {
+        if (locationCity != city) {
+          getWeather();
         }
+        //更新城市
+        setState(() {
+          locationCity = city;
+        });
+        showTips("获取位置信息，更新成功");
       }
-    } else {
-      final snackBar = new SnackBar(content: Text("位置信息获取失败，请检查一下权限"));
-      Scaffold.of(context).showSnackBar(snackBar);
     }
+  }
+
+  void showTips(String msg) {
+    final snackBar = new SnackBar(content: Text(msg));
+    ScaffoldMessenger.of(context).showSnackBar(snackBar);
   }
 }

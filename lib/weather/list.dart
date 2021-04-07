@@ -5,7 +5,7 @@ import 'dart:convert';
 
 ///未来7天天气列表
 class ListPage extends StatelessWidget {
-  ListPage({Key key, this.locationCity = '西安市'}) : super(key: key);
+  ListPage({Key? key, this.locationCity = '西安市'}) : super(key: key);
 
   //城市
   final String locationCity;
@@ -38,7 +38,7 @@ class ListPage extends StatelessWidget {
 class WeatherListBody extends StatefulWidget {
   //城市
 
-  WeatherListBody({Key key, this.locationCity}) : super(key: key);
+  WeatherListBody({Key? key, required this.locationCity}) : super(key: key);
 
   final String locationCity;
 
@@ -48,11 +48,8 @@ class WeatherListBody extends StatefulWidget {
 
 ///天气预报列表 状态
 class WeatherListBodyState extends State<WeatherListBody> {
-  //刷新
-  Completer<Null> completer;
-
   //周天气数据
-  List weekWeather;
+  List? weekWeather;
 
   //星期对应转换数据
   var weekDayData = {
@@ -76,9 +73,9 @@ class WeatherListBodyState extends State<WeatherListBody> {
     return new RefreshIndicator(
       child: ListView.builder(
           scrollDirection: Axis.vertical,
-          itemCount: weekWeather == null ? 0 : weekWeather.length,
+          itemCount: weekWeather?.length ?? 0,
           itemBuilder: (BuildContext context, int index) {
-            return buildWeekWeatherItem(weekWeather[index]);
+            return buildWeekWeatherItem(weekWeather![index]);
           }),
       onRefresh: _onRefresh,
     );
@@ -86,7 +83,7 @@ class WeatherListBodyState extends State<WeatherListBody> {
 
   ///周天气视图Item
   Widget buildWeekWeatherItem(weatherItem) {
-    var itemId = weatherItem['id'];
+    int itemId = weatherItem['id'];
     var itemWeather = weatherItem['weather'];
     var minTemp = weatherItem['minTemp'];
     var maxTemp = weatherItem['maxTemp'];
@@ -134,10 +131,8 @@ class WeatherListBodyState extends State<WeatherListBody> {
   }
 
   ///刷新
-  Future<Null> _onRefresh() async {
-    completer = new Completer<Null>();
-    getWeekWeather();
-    return completer.future;
+  Future<void> _onRefresh() async {
+    return getWeekWeather();
   }
 
   /// 获取一周的天气
@@ -158,10 +153,6 @@ class WeatherListBodyState extends State<WeatherListBody> {
       setState(() {
         weekWeather = data['result'];
       });
-    }
-    //刷新完毕
-    if (completer != null && !completer.isCompleted) {
-      completer.complete(null);
     }
   }
 }
