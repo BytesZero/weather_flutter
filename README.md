@@ -49,6 +49,7 @@ cd weather_flutter
 git checkout old_version
 flutter run
 ```
+
 ### 关注我
 
 - 遇到问题可以找我帮助解决（联系方式在 GitHub 主页）
@@ -56,7 +57,7 @@ flutter run
 - 百万级 `Flutter` 应用架构经验
 
 <p>
-  <a href="zhengsl.blog.csdn.net">
+  <a href="https://zhengsl.blog.csdn.net">
     <img width="200" alt="csdn" src="https://raw.githubusercontent.com/yy1300326388/yy1300326388/main/images/follow/csdn_follow.png">
   </a>
   <a href="https://github.com/yy1300326388">
@@ -66,3 +67,4 @@ flutter run
     <img width="200" alt="juejin" src="https://raw.githubusercontent.com/yy1300326388/yy1300326388/main/images/follow/juejin_follow.png">
   </a>
 </p>
+
